@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import RequestService from './RequestService';
+import RequestService from '../services/RequestService';
 import EditableTR from './EditableTR';
 
 class ExtractionForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {txtEventId: '1603569863028785'};
+    this.state = {
+      txtEventId: '1603569863028785'
+    };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleButtonClick = this.handleButtonClick.bind(this);
@@ -21,10 +23,24 @@ class ExtractionForm extends Component {
   handleButtonClick(e) {
     e.preventDefault();
 
-    RequestService.get(`https://graph.facebook.com/v2.10/${this.state.txtEventId}?access_token=EAACEdEose0cBANMLoTxwVzC1cnoFiHCkg3XI49QdO1bDcZCs1JqfWsl0fevSnoosUobJZCrEmtAhwrfbOHFh27ZBYrhmHKtc8fF02YPI433TdH162VqL20rh0lRD4ZBeDN9UsRD3In0DwZCKyzzbu59kLlshBSCnYGPy6qSdfVSZCXJhMpkH6iTgRshpFTUByxbKUYzVfEMAZDZD&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
+    RequestService.get(`https://graph.facebook.com/v2.10/${this.state.txtEventId}?access_token=EAACEdEose0cBAGpZCM5WCy6QMnwiBnWUzExaTMKWZBOcM9wrpa8pPXpq5ZCOxyFkxiXOZCc3R0mKxKHO0INZAtX2OIIfJ5CJUpMRCvZBfZAcBmDdXoGg1S4mGAHffEXU6pcYZAa0g5HUYzDPZBQsxkVziuu8ZAk1xxjXREc5N1jzei6jIWGMZCUKKCBzCNrUkr5rbnWM13ntaP8CwZDZD&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
       .then(response => response.json())
       .then(responseJson => {this.setState({eventInfo: responseJson})})
       .catch(error => {this.setState({eventInfo: error})});
+  }
+
+  getValue(fieldName) {
+    let value = '';
+
+    if (this.state.eventInfo) {
+      value = this.state.eventInfo[fieldName];
+
+      if (fieldName === 'place' && value.name) {
+        value = value.name;
+      }
+    }
+
+    return value;
   }
 
   render() {
@@ -35,16 +51,24 @@ class ExtractionForm extends Component {
       </p>
     );
 
+    const rowItems = [
+      {label: 'Name', jsonFieldName: 'name', index: 0},
+      {label: 'Description', jsonFieldName: 'description', index: 1},
+      {label: 'Place', jsonFieldName: 'place', index: 2},
+      {label: 'Start time', jsonFieldName: 'start_time', index: 3},
+      {label: 'End time', jsonFieldName: 'end_time', index: 4}
+    ];
+
+    const rowItemsComponent = rowItems.map((item) =>
+      <EditableTR label={item.label} key={item.index} value={this.getValue(item.jsonFieldName)} />
+    );
+
     let eventInfoComponent = null;
     if (this.state.eventInfo !== undefined && this.state.eventInfo !== null) {
       eventInfoComponent = (
         <table className="table table-border">
           <tbody>
-            <EditableTR label="Name" value={this.state.eventInfo.name} />
-            <EditableTR label="Description" value={this.state.eventInfo.description} />
-            <EditableTR label="Place" value={this.state.eventInfo.place} />
-            <EditableTR label="Start time" value={this.state.eventInfo.start_time} />
-            <EditableTR label="End time" value={this.state.eventInfo.end_time} />
+            {rowItemsComponent}
           </tbody>
         </table>
       );

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ExtractionForm from './ExtractionForm';
+import ExtractionForm from './components/ExtractionForm';
 
 class App extends Component {
 
