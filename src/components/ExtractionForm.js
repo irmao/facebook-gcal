@@ -33,7 +33,7 @@ class ExtractionForm extends Component {
   }
 
   handleAddToCalendarButtonClick(e) {
-    e.preventDefault();
+    e.preventDefault(); 
   }
 
   getValue(fieldName) {
