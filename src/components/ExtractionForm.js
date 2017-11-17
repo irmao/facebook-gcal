@@ -23,7 +23,9 @@ class ExtractionForm extends Component {
   handleButtonClick(e) {
     e.preventDefault();
 
-    RequestService.get(`https://graph.facebook.com/v2.10/${this.state.txtEventId}?access_token=EAACEdEose0cBAGpZCM5WCy6QMnwiBnWUzExaTMKWZBOcM9wrpa8pPXpq5ZCOxyFkxiXOZCc3R0mKxKHO0INZAtX2OIIfJ5CJUpMRCvZBfZAcBmDdXoGg1S4mGAHffEXU6pcYZAa0g5HUYzDPZBQsxkVziuu8ZAk1xxjXREc5N1jzei6jIWGMZCUKKCBzCNrUkr5rbnWM13ntaP8CwZDZD&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
+    const access_token = 'EAACEdEose0cBABet2Qs5vuoQZAzCAumGTTqcXYLpc3rDFT9DlCjKnKLxfBZAg2wtHNRSyZByP8MJsekomJCpC8HEswdFhEn4zgOqEcCvYpLVEcpvHbynQshsoh60VUbDan1DcV7WVpqwPe89M9nUqtDAs6Q3Vul93XCftZBke6Y0uZBaLhzDYAx47V2ZArnXX3b0zN1UEq1gZDZD';
+
+    RequestService.get(`https://graph.facebook.com/v2.10/${this.state.txtEventId}?access_token=${access_token}&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
       .then(response => response.json())
       .then(responseJson => {this.setState({eventInfo: responseJson})})
       .catch(error => {this.setState({eventInfo: error})});
@@ -32,7 +34,7 @@ class ExtractionForm extends Component {
   getValue(fieldName) {
     let value = '';
 
-    if (this.state.eventInfo) {
+    if (this.state.eventInfo && this.state.eventInfo[fieldName]) {
       value = this.state.eventInfo[fieldName];
 
       if (fieldName === 'place' && value.name) {

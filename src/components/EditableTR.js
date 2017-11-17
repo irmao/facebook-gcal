@@ -32,19 +32,26 @@ class EditableTR extends Component {
       <td>{this.state.value}</td>
     );
 
+    const editIcon = require('../assets/open-iconic/svg/pencil.svg');
+    const doneIcon = require('../assets/open-iconic/svg/check.svg');
+
+    let icon = editIcon;
+
     if (this.state.openForEdit) {
       valueField = (
         <td>
           <input type="text" value={this.state.value} onChange={this.handleInputChange} className="form-control" />
         </td>
       );
+
+      icon = doneIcon;
     }
 
     return (
       <tr>
         <td>{this.label}</td>
         {valueField}  
-        <td><a href="#" onClick={this.toggleOpenForEdit}><img src={require('../assets/open-iconic/svg/pencil.svg')} alt="Edit" /></a></td>
+        <td><a href="#" onClick={this.toggleOpenForEdit}><img src={icon} alt="Edit" /></a></td>
       </tr>
     );
   }
