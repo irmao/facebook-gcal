@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import RequestService from '../services/RequestService';
+import CalendarComponent from './CalendarComponent';
 import EditableTR from './EditableTR';
 
 class ExtractionForm extends Component {
@@ -33,7 +34,7 @@ class ExtractionForm extends Component {
   }
 
   handleAddToCalendarButtonClick(e) {
-    e.preventDefault(); 
+    e.preventDefault();
   }
 
   getValue(fieldName) {
@@ -84,7 +85,7 @@ class ExtractionForm extends Component {
     let addToCalendarButton = null;
     if (this.state.eventInfo !== undefined && this.state.eventInfo !== null) {
       addToCalendarButton = (
-        <button onClick={this.handleAddToCalendarButtonClick} className="form-control btn btn-primary col-sm-3">Add to calendar</button>
+        <CalendarComponent />
       );
     }
     
