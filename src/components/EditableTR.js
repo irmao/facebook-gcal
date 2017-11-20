@@ -15,6 +15,10 @@ class EditableTR extends Component {
     this.toggleOpenForEdit = this.toggleOpenForEdit.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({value: nextProps.value});
+  }
+
   handleInputChange(event) {
     this.setState({
       value: event.target.value

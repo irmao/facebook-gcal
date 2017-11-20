@@ -11,7 +11,8 @@ class ExtractionForm extends Component {
     super(props);
     this.state = {
       logedInFacebook: false,
-      txtEventUrl: ''
+      txtEventUrl: '',
+      eventInfo: null
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -70,21 +71,11 @@ class ExtractionForm extends Component {
             }
             this.setState({eventInfo: responseJson});
           })
-          .catch(error => {this.setState({eventInfo: error})});
+          .catch(error => {this.setState({eventInfo: {}})});
       } else {
         FB.login();
       }
     });
-  }
-
-  getValue(fieldName) {
-    let value = '';
-
-    if (this.state.eventInfo && this.state.eventInfo[fieldName]) {
-      value = this.state.eventInfo[fieldName];
-    }
-
-    return value;
   }
 
   render() {
@@ -103,13 +94,14 @@ class ExtractionForm extends Component {
       {label: 'End time', jsonFieldName: 'end_time', index: 4}
     ];
 
-    const rowItemsComponent = rowItems.map((item) =>
-      <EditableTR label={item.label} key={item.index} value={this.getValue(item.jsonFieldName)} 
-        fieldName={item.jsonFieldName} onTextChange={this.handleInfoChange} />
-    );
-
     let eventInfoComponent = null;
+    
     if (this.state.eventInfo !== undefined && this.state.eventInfo !== null) {
+      const rowItemsComponent = rowItems.map((item) =>
+        <EditableTR label={item.label} key={item.index} value={this.state.eventInfo[item.jsonFieldName]} 
+          fieldName={item.jsonFieldName} onTextChange={this.handleInfoChange} />
+      );
+
       eventInfoComponent = (
         <table className="table table-border">
           <tbody>
