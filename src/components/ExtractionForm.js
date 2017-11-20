@@ -52,7 +52,9 @@ class ExtractionForm extends Component {
       if (response.status === 'connected') {
         this.accessToken = response.authResponse.accessToken;
 
-        RequestService.get(`https://graph.facebook.com/v2.10/${this.state.txtEventId}?access_token=${this.accessToken}&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
+        const eventId = this.state.txtEventId.split('/')[4];
+
+        RequestService.get(`https://graph.facebook.com/v2.10/${eventId}?access_token=${this.accessToken}&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
           .then(response => response.json())
           .then(responseJson => {this.setState({eventInfo: responseJson})})
           .catch(error => {this.setState({eventInfo: error})});
