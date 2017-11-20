@@ -57,7 +57,7 @@ class EditableTR extends Component {
       <tr>
         <td>{this.label}</td>
         {valueField}  
-        <td><a href="#" onClick={this.toggleOpenForEdit}><img src={icon} alt="Edit" /></a></td>
+        <td><a href="#" onClick={this.toggleOpenForEdit}><img src={icon} alt="Edit" style={{width: 15}} /></a></td>
       </tr>
     );
   }
