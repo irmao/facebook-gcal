@@ -16,6 +16,10 @@ class ExtractionForm extends Component {
     this.handleAddToCalendarButtonClick = this.handleAddToCalendarButtonClick.bind(this); 
   }
 
+  componentDidMount() {
+    
+  }
+
   handleInputChange(event) {
     this.setState({
       txtEventId: event.target.value
