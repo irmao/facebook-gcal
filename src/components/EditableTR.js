@@ -22,9 +22,15 @@ class EditableTR extends Component {
   }
 
   toggleOpenForEdit() {
-    this.setState((prevState) => ({
-      openForEdit: !prevState.openForEdit
-    }));
+    this.setState(function(prevState) {
+      if (prevState.openForEdit) {
+        this.props.onTextChange(this.props.fieldName, this.state.value);
+      }
+
+      return {
+        openForEdit: !prevState.openForEdit
+      }
+    });
   }
 
   render() {

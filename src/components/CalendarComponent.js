@@ -19,8 +19,6 @@ class CalendarComponent extends Component {
     
     this.state = { gapiReady: false, isSignedIn: false };
 
-    this.eventInfo = props.eventInfo;
-
     this.initClient = this.initClient.bind(this);
     this.updateSigninStatus = this.updateSigninStatus.bind(this);
   }
@@ -87,15 +85,15 @@ class CalendarComponent extends Component {
     e.preventDefault();
 
     var event = {
-      'summary': this.eventInfo['name'],
-      'location': this.eventInfo['place']['name'] ? this.eventInfo['place']['name'] : this.eventInfo['place'],
-      'description': this.eventInfo['description'],
+      'summary': this.props.eventInfo.name,
+      'location': this.props.eventInfo.place,
+      'description': this.props.eventInfo.description,
       'end': {
-        'dateTime': this.eventInfo['end_time'],
+        'dateTime': this.props.eventInfo.end_time,
         'timeZone': 'America/Sao_Paulo'
       },
       'start': {
-      'dateTime': this.eventInfo['start_time'],
+      'dateTime': this.props.eventInfo.start_time,
       'timeZone': 'America/Sao_Paulo'
       }
     };

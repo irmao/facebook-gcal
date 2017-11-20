@@ -10,11 +10,12 @@ class ExtractionForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      txtEventId: '1603569863028785',
-      logedInFacebook: false
+      logedInFacebook: false,
+      txtEventUrl: ''
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInfoChange = this.handleInfoChange.bind(this);
     this.handleRetrieveButtonClick = this.handleRetrieveButtonClick.bind(this);
   }
 
@@ -41,10 +42,17 @@ class ExtractionForm extends Component {
 
   handleInputChange(event) {
     this.setState({
-      txtEventId: event.target.value
+      txtEventUrl: event.target.value
     });
   }
 
+  handleInfoChange(fieldName, newInfo) {
+    let eventInfo = this.state.eventInfo;
+    eventInfo[fieldName] = newInfo;
+
+    this.setState({eventInfo: eventInfo});
+  }
+  
   handleRetrieveButtonClick(e) {
     e.preventDefault();
 
@@ -52,11 +60,16 @@ class ExtractionForm extends Component {
       if (response.status === 'connected') {
         this.accessToken = response.authResponse.accessToken;
 
-        const eventId = this.state.txtEventId.split('/')[4];
+        const eventId = this.state.txtEventUrl.split('/')[4];
 
         RequestService.get(`https://graph.facebook.com/v2.10/${eventId}?access_token=${this.accessToken}&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
           .then(response => response.json())
-          .then(responseJson => {this.setState({eventInfo: responseJson})})
+          .then(responseJson => {
+            if (responseJson.place.name) {
+              responseJson.place = responseJson.place.name;
+            }
+            this.setState({eventInfo: responseJson});
+          })
           .catch(error => {this.setState({eventInfo: error})});
       } else {
         FB.login();
@@ -69,10 +82,6 @@ class ExtractionForm extends Component {
 
     if (this.state.eventInfo && this.state.eventInfo[fieldName]) {
       value = this.state.eventInfo[fieldName];
-
-      if (fieldName === 'place' && value.name) {
-        value = value.name;
-      }
     }
 
     return value;
@@ -81,7 +90,7 @@ class ExtractionForm extends Component {
   render() {
     const inputFieldsComponent = (
       <p className="row">
-        <input type="text" placeholder="Event id" value={this.state.txtEventId} onChange={this.handleInputChange} className="form-control col-sm-9" />
+        <input type="text" placeholder="Event url" value={this.state.txtEventUrl} onChange={this.handleInputChange} className="form-control col-sm-9" />
         <button onClick={this.handleRetrieveButtonClick} className="form-control btn btn-primary col-sm-3">Retrieve event</button>
       </p>
     );
@@ -95,7 +104,8 @@ class ExtractionForm extends Component {
     ];
 
     const rowItemsComponent = rowItems.map((item) =>
-      <EditableTR label={item.label} key={item.index} value={this.getValue(item.jsonFieldName)} />
+      <EditableTR label={item.label} key={item.index} value={this.getValue(item.jsonFieldName)} 
+        fieldName={item.jsonFieldName} onTextChange={this.handleInfoChange} />
     );
 
     let eventInfoComponent = null;
