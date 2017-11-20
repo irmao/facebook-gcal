@@ -76,7 +76,7 @@ class ExtractionForm extends Component {
           })
           .catch(error => {this.setState({eventInfo: {}})});
       } else {
-        FB.login();
+        FB.login(function(){}, {scope: 'user_events'});
       }
     });
   }
