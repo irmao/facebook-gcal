@@ -1,3 +1,5 @@
+/* global FB */
+
 import React, { Component } from 'react';
 import RequestService from '../services/RequestService';
 import CalendarComponent from './CalendarComponent';
@@ -8,16 +10,33 @@ class ExtractionForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      txtEventId: '1603569863028785'
+      txtEventId: '1603569863028785',
+      logedInFacebook: false
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleRetrieveButtonClick = this.handleRetrieveButtonClick.bind(this);
-    this.handleAddToCalendarButtonClick = this.handleAddToCalendarButtonClick.bind(this); 
   }
 
   componentDidMount() {
-    
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '168433393896287',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v2.11'
+      });
+        
+      FB.AppEvents.logPageView();
+    };
+  
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "https://connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
   }
 
   handleInputChange(event) {
@@ -29,16 +48,18 @@ class ExtractionForm extends Component {
   handleRetrieveButtonClick(e) {
     e.preventDefault();
 
-    const access_token = 'EAACEdEose0cBAF5AAC7qTeGZBE1ShATuC4ZB4F1spjH57CfBu6so3w0A64YbW1ZAYvtuplbyCisZBlbknE5h22UJCxOzijmgGa3A8SEpxzFckn0lfjtCvkhpTB1tkzZC7PPAZBYbHyv8TY141wNNM7BkIcHZC2YeO0cV1Acdg4aJxbOTvy9c2gmgLZBjiCQN1zPZC8yPY08VxRAZDZD';
+    FB.getLoginStatus((response) => {
+      if (response.status === 'connected') {
+        this.accessToken = response.authResponse.accessToken;
 
-    RequestService.get(`https://graph.facebook.com/v2.10/${this.state.txtEventId}?access_token=${access_token}&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
-      .then(response => response.json())
-      .then(responseJson => {this.setState({eventInfo: responseJson})})
-      .catch(error => {this.setState({eventInfo: error})});
-  }
-
-  handleAddToCalendarButtonClick(e) {
-    e.preventDefault();
+        RequestService.get(`https://graph.facebook.com/v2.10/${this.state.txtEventId}?access_token=${this.accessToken}&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
+          .then(response => response.json())
+          .then(responseJson => {this.setState({eventInfo: responseJson})})
+          .catch(error => {this.setState({eventInfo: error})});
+      } else {
+        FB.login();
+      }
+    });
   }
 
   getValue(fieldName) {
