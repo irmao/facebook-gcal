@@ -2,6 +2,7 @@
   "name": "facebook-gcal",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://students.ic.unicamp.br/~ra104308/facebook_gcal",
   "dependencies": {
     "google-auth-library": "^0.11.0",
     "googleapis": "^22.2.0",
