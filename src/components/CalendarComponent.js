@@ -19,6 +19,8 @@ class CalendarComponent extends Component {
         
         this.state = { gapiReady: false, isSignedIn: false };
 
+        this.eventInfo = props.eventInfo;
+
         this.initClient = this.initClient.bind(this);
         this.updateSigninStatus = this.updateSigninStatus.bind(this);
     }
@@ -85,15 +87,15 @@ class CalendarComponent extends Component {
         e.preventDefault();
 
         var event = {
-            'summary': 'Google I/O 2015',
-            'location': '800 Howard St., San Francisco, CA 94103',
-            'description': 'A chance to hear more about Google\'s developer products.',
+            'summary': this.eventInfo['name'],
+            'location': this.eventInfo['place']['name'] ? this.eventInfo['place']['name'] : this.eventInfo['place'],
+            'description': this.eventInfo['description'],
             'end': {
-            'dateTime': '2017-11-19T19:00:00',
-            'timeZone': 'America/Sao_Paulo'
+                'dateTime': this.eventInfo['end_time'],
+                'timeZone': 'America/Sao_Paulo'
             },
             'start': {
-            'dateTime': '2017-11-19T18:00:00',
+            'dateTime': this.eventInfo['start_time'],
             'timeZone': 'America/Sao_Paulo'
             }
         };

@@ -25,7 +25,7 @@ class ExtractionForm extends Component {
   handleRetrieveButtonClick(e) {
     e.preventDefault();
 
-    const access_token = 'EAACEdEose0cBABet2Qs5vuoQZAzCAumGTTqcXYLpc3rDFT9DlCjKnKLxfBZAg2wtHNRSyZByP8MJsekomJCpC8HEswdFhEn4zgOqEcCvYpLVEcpvHbynQshsoh60VUbDan1DcV7WVpqwPe89M9nUqtDAs6Q3Vul93XCftZBke6Y0uZBaLhzDYAx47V2ZArnXX3b0zN1UEq1gZDZD';
+    const access_token = 'EAACEdEose0cBAF5AAC7qTeGZBE1ShATuC4ZB4F1spjH57CfBu6so3w0A64YbW1ZAYvtuplbyCisZBlbknE5h22UJCxOzijmgGa3A8SEpxzFckn0lfjtCvkhpTB1tkzZC7PPAZBYbHyv8TY141wNNM7BkIcHZC2YeO0cV1Acdg4aJxbOTvy9c2gmgLZBjiCQN1zPZC8yPY08VxRAZDZD';
 
     RequestService.get(`https://graph.facebook.com/v2.10/${this.state.txtEventId}?access_token=${access_token}&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
       .then(response => response.json())
@@ -82,10 +82,10 @@ class ExtractionForm extends Component {
       );
     }
 
-    let addToCalendarButton = null;
+    let calendarComponent = null;
     if (this.state.eventInfo !== undefined && this.state.eventInfo !== null) {
-      addToCalendarButton = (
-        <CalendarComponent />
+      calendarComponent = (
+        <CalendarComponent eventInfo={this.state.eventInfo} />
       );
     }
     
@@ -93,7 +93,7 @@ class ExtractionForm extends Component {
       <form>
         {inputFieldsComponent}
         {eventInfoComponent}
-        {addToCalendarButton}
+        {calendarComponent}
       </form>
     );
   }
