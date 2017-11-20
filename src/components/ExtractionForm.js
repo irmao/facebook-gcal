@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import RequestService from '../services/RequestService';
 import CalendarComponent from './CalendarComponent';
 import EditableTR from './EditableTR';
+import AlertContainer from 'react-alert';
 
 class ExtractionForm extends Component {
 
@@ -18,6 +19,8 @@ class ExtractionForm extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleInfoChange = this.handleInfoChange.bind(this);
     this.handleRetrieveButtonClick = this.handleRetrieveButtonClick.bind(this);
+    this.handleAddSuccess = this.handleAddSuccess.bind(this);
+    this.handleAddFailure = this.handleAddFailure.bind(this);
   }
 
   componentDidMount() {
@@ -78,6 +81,17 @@ class ExtractionForm extends Component {
     });
   }
 
+  handleAddSuccess(event) {
+    console.log('Event created: ' + event.htmlLink);
+    this.setState({eventInfo: null});
+    this.msg.success('Event added successfully');
+  }
+
+  handleAddFailure(error) {
+    console.log('Error: ' + error);
+    this.msg.error('Error adding event');    
+  }
+
   render() {
     const inputFieldsComponent = (
       <p className="row">
@@ -114,7 +128,9 @@ class ExtractionForm extends Component {
     let calendarComponent = null;
     if (this.state.eventInfo !== undefined && this.state.eventInfo !== null) {
       calendarComponent = (
-        <CalendarComponent eventInfo={this.state.eventInfo} />
+        <CalendarComponent eventInfo={this.state.eventInfo} 
+          onAddSuccess={this.handleAddSuccess}
+          onAddFailure={this.handleAddFailure} />
       );
     }
     
@@ -123,6 +139,7 @@ class ExtractionForm extends Component {
         {inputFieldsComponent}
         {eventInfoComponent}
         {calendarComponent}
+        <AlertContainer ref={a => this.msg = a} />
       </form>
     );
   }

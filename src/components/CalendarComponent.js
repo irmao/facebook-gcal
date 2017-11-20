@@ -104,7 +104,11 @@ class CalendarComponent extends Component {
     });
 
     request.execute((event) => {
-      console.log('Event created: ' + event.htmlLink);
+      if (event.code) {
+        this.props.onAddFailure(event);
+      } else {
+        this.props.onAddSuccess(event);
+      }
     });
   }
 

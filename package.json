@@ -6,6 +6,7 @@
     "google-auth-library": "^0.11.0",
     "googleapis": "^22.2.0",
     "react": "^16.0.0",
+    "react-alert": "^2.4.0",
     "react-dom": "^16.0.0",
     "react-scripts": "1.0.17"
   },
