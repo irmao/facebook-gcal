@@ -16,8 +16,8 @@ class CalendarComponent extends Component {
     // Authorization scopes required by the API; multiple scopes can be
     // included, separated by spaces.
     this.SCOPES = "https://www.googleapis.com/auth/calendar";
-    
-    this.state = { gapiReady: false, isSignedIn: false };
+
+    this.state = { gapiReady: false, isSignedIn: false, calendarValues: [] };
 
     this.initClient = this.initClient.bind(this);
     this.updateSigninStatus = this.updateSigninStatus.bind(this);
@@ -53,8 +53,19 @@ class CalendarComponent extends Component {
       this.handleAuthClick = this.handleAuthClick.bind(this);
       this.handleSignoutClick = this.handleSignoutClick.bind(this);
       this.handlePostClick = this.handlePostClick.bind(this);
+      this.handleSelectedCalendarChange = this.handleSelectedCalendarChange.bind(this);
+
+      this.loadCalendarList();
 
       this.setState( {gapiReady: true} );
+    });    
+  }
+
+  loadCalendarList() {
+    const request = gapi.client.calendar.calendarList.list();
+    request.execute((event) => {
+      const calendarValues = event.items.map((item) => ({label: item.summary, id: item.id}));
+      this.setState({calendarValues: calendarValues, selectedCalendar: calendarValues[0].id});
     });
   }
 
@@ -78,6 +89,11 @@ class CalendarComponent extends Component {
     gapi.auth2.getAuthInstance().signOut();
   }
 
+  handleSelectedCalendarChange(e) {
+    e.preventDefault();
+    this.setState({selectedCalendar: e.target.value});
+  }
+
   /**
    * Post an event upon button click.
    */
@@ -99,7 +115,7 @@ class CalendarComponent extends Component {
     };
 
     var request = gapi.client.calendar.events.insert({
-      'calendarId': 'primary',
+      'calendarId': this.state.selectedCalendar,
       'resource': event
     });
 
@@ -116,9 +132,21 @@ class CalendarComponent extends Component {
     let authorizeButton = null;
     let signoutButton = null;
     let postButton = null;
+    let calendarList = null;
 
     if (this.state.gapiReady) {
       if (this.state.isSignedIn) {
+
+        const calendarOptions = this.state.calendarValues.map((item) => (
+          <option value={item.id} key={item.id}>{item.label}</option>
+        ));
+
+        calendarList = ( 
+          <select onChange={this.handleSelectedCalendarChange} className="form-control" value={this.state.selectedCalendar}>
+            {calendarOptions}
+          </select>
+        );
+
         signoutButton = (
           <button onClick={this.handleSignoutClick} className="form-control btn btn-primary">Singout from Google Calendar</button>        
         );
@@ -134,12 +162,19 @@ class CalendarComponent extends Component {
     }
 
     return (
-      <div style={{marginBottom: 10}}>
+      <div>
+        <div style={{marginBottom: 10}}>
+          {calendarList}
+        </div>
+
         <div style={{marginBottom: 10}}>
           {authorizeButton}
           {postButton}
         </div>
-        {signoutButton}
+
+        <div style={{marginBottom: 10}}>
+          {signoutButton}
+        </div>        
       </div>
     );
   }
