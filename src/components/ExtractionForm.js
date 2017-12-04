@@ -69,7 +69,7 @@ class ExtractionForm extends Component {
         RequestService.get(`https://graph.facebook.com/v2.10/${eventId}?access_token=${this.accessToken}&debug=all&format=json&method=get&pretty=0&suppress_http_code=1`)
           .then(response => response.json())
           .then(responseJson => {
-            if (responseJson.place.name) {
+            if (responseJson.place && responseJson.place.name) {
               responseJson.place = responseJson.place.name;
             }
             this.setState({eventInfo: responseJson});
